@@ -44,12 +44,6 @@ class RNCallKeep {
     return;
   };
 
-  focusApp = () => {
-    if (!isIOS) {
-      RNCallKeepModule.focusApp();
-    }
-  }
-
   displayIncomingCall = (uuid, handle, localizedCallerName, handleType = 'number', hasVideo = false) => {
     if (!isIOS) {
       RNCallKeepModule.displayIncomingCall(uuid, handle, localizedCallerName);

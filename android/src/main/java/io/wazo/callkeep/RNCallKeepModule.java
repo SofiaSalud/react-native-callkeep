@@ -183,14 +183,6 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void focusApp() {
-        Intent intent = new Intent(Intent.ACTION_MAIN, null);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(context, MainActivity.class);
-        startActivity(intent);
-    }
-
-    @ReactMethod
     public void endCall(String uuid) {
         Log.d(TAG, "endCall called");
         if (!isConnectionServiceAvailable() || !hasPhoneAccount()) {
