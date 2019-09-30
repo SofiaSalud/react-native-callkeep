@@ -35,6 +35,7 @@ import android.telecom.ConnectionService;
 import android.telecom.DisconnectCause;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
+import android.telecom.VideoProfile;
 import android.util.Log;
 
 import android.app.ActivityManager;
@@ -128,6 +129,8 @@ public class VoiceConnectionService extends ConnectionService {
         Uri number = request.getAddress();
         String name = extra.getString(EXTRA_CALLER_NAME);
         Connection incomingCallConnection = createConnection(request);
+        incomingCallConnection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
+        incomingCallConnection.setVideoState(VideoProfile.STATE_BIDIRECTIONAL);
         incomingCallConnection.setRinging();
         incomingCallConnection.setInitialized();
 
@@ -175,6 +178,8 @@ public class VoiceConnectionService extends ConnectionService {
         }
 
         outgoingCallConnection = createConnection(request);
+        outgoingCallConnection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
+        outgoingCallConnection.setVideoState(VideoProfile.STATE_BIDIRECTIONAL);
         outgoingCallConnection.setDialing();
         outgoingCallConnection.setAudioModeIsVoip(true);
         outgoingCallConnection.setCallerDisplayName(displayName, TelecomManager.PRESENTATION_ALLOWED);
