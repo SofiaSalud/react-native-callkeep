@@ -86,6 +86,7 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     public static final String ACTION_ONGOING_CALL = "ACTION_ONGOING_CALL";
     public static final String ACTION_AUDIO_SESSION = "ACTION_AUDIO_SESSION";
     public static final String ACTION_CHECK_REACHABILITY = "ACTION_CHECK_REACHABILITY";
+    public static final String ACTION_SHOW_INCOMING_CALL_UI = "ACTION_SHOW_INCOMING_CALL_UI";
 
     private static final String E_ACTIVITY_DOES_NOT_EXIST = "E_ACTIVITY_DOES_NOT_EXIST";
     private static final String REACT_NATIVE_MODULE_NAME = "RNCallKeep";
@@ -484,6 +485,7 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     private void registerReceiver() {
         if (!isReceiverRegistered) {
             IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(ACTION_SHOW_INCOMING_CALL_UI);
             intentFilter.addAction(ACTION_END_CALL);
             intentFilter.addAction(ACTION_ANSWER_CALL);
             intentFilter.addAction(ACTION_MUTE_CALL);
@@ -523,6 +525,10 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
             HashMap<String, String> attributeMap = (HashMap<String, String>)intent.getSerializableExtra("attributeMap");
 
             switch (intent.getAction()) {
+                case ACTION_SHOW_INCOMING_CALL_UI:
+                    args.putString("callUUID", attributeMap.get(EXTRA_CALL_UUID));
+                    sendEventToJS("RNCallKeepShowIncomingCallUI", args);
+                    break;
                 case ACTION_END_CALL:
                     args.putString("callUUID", attributeMap.get(EXTRA_CALL_UUID));
                     sendEventToJS("RNCallKeepPerformEndCallAction", args);

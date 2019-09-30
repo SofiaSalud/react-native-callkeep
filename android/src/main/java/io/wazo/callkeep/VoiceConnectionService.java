@@ -129,8 +129,6 @@ public class VoiceConnectionService extends ConnectionService {
         Uri number = request.getAddress();
         String name = extra.getString(EXTRA_CALLER_NAME);
         Connection incomingCallConnection = createConnection(request);
-        incomingCallConnection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
-        incomingCallConnection.setVideoState(VideoProfile.STATE_BIDIRECTIONAL);
         incomingCallConnection.setRinging();
         incomingCallConnection.setInitialized();
 
@@ -178,8 +176,6 @@ public class VoiceConnectionService extends ConnectionService {
         }
 
         outgoingCallConnection = createConnection(request);
-        outgoingCallConnection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
-        outgoingCallConnection.setVideoState(VideoProfile.STATE_BIDIRECTIONAL);
         outgoingCallConnection.setDialing();
         outgoingCallConnection.setAudioModeIsVoip(true);
         outgoingCallConnection.setCallerDisplayName(displayName, TelecomManager.PRESENTATION_ALLOWED);
@@ -247,6 +243,8 @@ public class VoiceConnectionService extends ConnectionService {
         HashMap<String, String> extrasMap = this.bundleToMap(extras);
         extrasMap.put(EXTRA_CALL_NUMBER, request.getAddress().toString());
         VoiceConnection connection = new VoiceConnection(this, extrasMap);
+        connection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
+        connection.setVideoState(VideoProfile.STATE_BIDIRECTIONAL);
         connection.setConnectionCapabilities(Connection.CAPABILITY_MUTE | Connection.CAPABILITY_SUPPORT_HOLD);
         connection.setInitializing();
         connection.setExtras(extras);

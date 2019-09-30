@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import static io.wazo.callkeep.RNCallKeepModule.ACTION_SHOW_INCOMING_CALL_UI;
 import static io.wazo.callkeep.RNCallKeepModule.ACTION_ANSWER_CALL;
 import static io.wazo.callkeep.RNCallKeepModule.ACTION_AUDIO_SESSION;
 import static io.wazo.callkeep.RNCallKeepModule.ACTION_DTMF_TONE;
@@ -89,6 +90,13 @@ public class VoiceConnection extends Connection {
 
         this.isMuted = state.isMuted();
         sendCallRequestToActivity(isMuted ? ACTION_MUTE_CALL : ACTION_UNMUTE_CALL, handle);
+    }
+
+    @Override
+    public void onShowIncomingCallUi() {
+        Log.d(TAG, "onShowIncomingCallUi executed");
+
+        sendCallRequestToActivity(ACTION_SHOW_INCOMING_CALL_UI, handle);
     }
 
     @Override

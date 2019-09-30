@@ -3,6 +3,7 @@ import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 const RNCallKeepModule = NativeModules.RNCallKeep;
 const eventEmitter = new NativeEventEmitter(RNCallKeepModule);
 
+const RNCallKeepShowIncomingCallUI = 'RNCallKeepShowIncomingCallUI';
 const RNCallKeepDidReceiveStartCallAction = 'RNCallKeepDidReceiveStartCallAction';
 const RNCallKeepPerformAnswerCallAction = 'RNCallKeepPerformAnswerCallAction';
 const RNCallKeepPerformEndCallAction = 'RNCallKeepPerformEndCallAction';
@@ -24,6 +25,9 @@ const didReceiveStartCallAction = handler => {
 
   return eventEmitter.addListener(RNCallKeepDidReceiveStartCallAction, (data) => handler(data));
 };
+
+const showUI = handler =>
+  eventEmitter.addListener(RNCallKeepShowIncomingCallUI, handler);
 
 const answerCall = handler =>
   eventEmitter.addListener(RNCallKeepPerformAnswerCallAction, (data) => handler(data));
@@ -56,6 +60,7 @@ const checkReachability = handler =>
   eventEmitter.addListener(RNCallKeepCheckReachability, handler);
 
 export const listeners = {
+  showUI,
   didReceiveStartCallAction,
   answerCall,
   endCall,
