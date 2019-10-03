@@ -45,7 +45,6 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.sofiasalud.app.MainActivity;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Dynamic;
