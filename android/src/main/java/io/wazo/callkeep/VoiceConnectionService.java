@@ -46,6 +46,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
