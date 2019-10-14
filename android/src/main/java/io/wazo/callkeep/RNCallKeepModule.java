@@ -204,11 +204,12 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        Map<String, VoiceConnection> currentConnections = VoiceConnectionService.currentConnections;
-        for (Map.Entry<String, VoiceConnection> connectionEntry : currentConnections.entrySet()) {
-            Connection connectionToEnd = connectionEntry.getValue();
-            connectionToEnd.onDisconnect();
-        }
+        VoiceConnectionService.endAllConnections();
+        // Map<String, VoiceConnection> currentConnections = VoiceConnectionService.currentConnections;
+        // for (Map.Entry<String, VoiceConnection> connectionEntry : currentConnections.entrySet()) {
+        //     Connection connectionToEnd = connectionEntry.getValue();
+        //     connectionToEnd.onDisconnect();
+        // }
 
         Log.d(TAG, "endAllCalls executed");
     }
@@ -415,6 +416,11 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public static Boolean isSelfManagedConnectionServiceAvailable() {
+        return Build.VERSION.SDK_INT >= 26;
+    }
+
+    @ReactMethod
     public void backToForeground() {
         Context context = getAppContext();
         String packageName = context.getApplicationContext().getPackageName();
@@ -435,9 +441,18 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
         String appName = this.getApplicationName(appContext);
 
         handle = new PhoneAccountHandle(cName, appName);
-
         PhoneAccount.Builder builder = new PhoneAccount.Builder(handle, appName)
-                .setCapabilities(PhoneAccount.CAPABILITY_SELF_MANAGED);
+
+        // if (
+        //     isSelfManagedConnectionServiceAvailable() &&
+        //     _settings != null &&
+        //     _settings.hasKey("selfManaged") &&
+        //     _settings.getBoolean("selfManaged")
+        // ) {
+            builder.setCapabilities(PhoneAccount.CAPABILITY_SELF_MANAGED);
+        // } else {
+        //     builder.setCapabilities(PhoneAccount.CAPABILITY_CALL_PROVIDER);
+        // }
 
         if (_settings != null && _settings.hasKey("imageName")) {
             int identifier = appContext.getResources().getIdentifier(_settings.getString("imageName"), "drawable", appContext.getPackageName());

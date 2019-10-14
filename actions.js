@@ -27,7 +27,7 @@ const didReceiveStartCallAction = handler => {
 };
 
 const showUI = handler =>
-  eventEmitter.addListener(RNCallKeepShowIncomingCallUI, handler);
+  !isIOS && eventEmitter.addListener(RNCallKeepShowIncomingCallUI, handler);
 
 const answerCall = handler =>
   eventEmitter.addListener(RNCallKeepPerformAnswerCallAction, (data) => handler(data));

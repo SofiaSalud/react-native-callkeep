@@ -99,6 +99,21 @@ public class VoiceConnectionService extends ConnectionService {
         currentConnectionService = this;
     }
 
+    public static void endAllConnections() {
+        Collection<Connection> connections = currentConnectionService.getAllConnections();
+        for (Connection c : connections) {
+            c.onDisconnect();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        Collection<Connection> connections = getAllConnections();
+        for (Connection c : connections) {
+            c.onDisconnect();
+        }
+    }
+
     public static void setAvailable(Boolean value) {
         Log.d(TAG, "setAvailable: " + (value ? "true" : "false"));
         if (value) {
@@ -243,7 +258,9 @@ public class VoiceConnectionService extends ConnectionService {
         HashMap<String, String> extrasMap = this.bundleToMap(extras);
         extrasMap.put(EXTRA_CALL_NUMBER, request.getAddress().toString());
         VoiceConnection connection = new VoiceConnection(this, extrasMap);
-        connection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
+        if (Build.VERSION.SDK_INT >= 26) {
+            connection.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
+        }
         connection.setVideoState(VideoProfile.STATE_BIDIRECTIONAL);
         connection.setConnectionCapabilities(Connection.CAPABILITY_MUTE | Connection.CAPABILITY_SUPPORT_HOLD);
         connection.setInitializing();

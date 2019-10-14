@@ -94,8 +94,6 @@ public class VoiceConnection extends Connection {
 
     @Override
     public void onShowIncomingCallUi() {
-        Log.d(TAG, "onShowIncomingCallUi executed");
-
         sendCallRequestToActivity(ACTION_SHOW_INCOMING_CALL_UI, handle);
     }
 
