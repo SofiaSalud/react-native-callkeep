@@ -441,7 +441,7 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
         String appName = this.getApplicationName(appContext);
 
         handle = new PhoneAccountHandle(cName, appName);
-        PhoneAccount.Builder builder = new PhoneAccount.Builder(handle, appName)
+        PhoneAccount.Builder builder = new PhoneAccount.Builder(handle, appName);
 
         // if (
         //     isSelfManagedConnectionServiceAvailable() &&
