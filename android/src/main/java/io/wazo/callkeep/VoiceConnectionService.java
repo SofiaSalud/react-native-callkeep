@@ -101,9 +101,16 @@ public class VoiceConnectionService extends ConnectionService {
     }
 
     public static void endAllConnections() {
-        Collection<Connection> connections = currentConnectionService.getAllConnections();
-        for (Connection c : connections) {
-            c.onDisconnect();
+        if (currentConnectionService != null) {
+            Collection<Connection> connections = currentConnectionService.getAllConnections();
+            for (Connection c : connections) {
+                c.onDisconnect();
+            }
+        } else {
+            for (Map.Entry<String, VoiceConnection> connectionEntry : currentConnections.entrySet()) {
+                Connection connectionToEnd = connectionEntry.getValue();
+                connectionToEnd.onDisconnect();
+            }
         }
     }
 
