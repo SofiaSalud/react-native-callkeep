@@ -171,20 +171,20 @@ class RNCallKeep {
     RNCallKeepModule.setup(options);
 
     const showAccountAlert = await RNCallKeepModule.checkPhoneAccountPermission(options.additionalPermissions || []);
-    const shouldOpenAccounts = await this._alert(options, showAccountAlert);
+    // const shouldOpenAccounts = await this._alert(options, showAccountAlert);
 
-    if (shouldOpenAccounts) {
+    // if (shouldOpenAccounts) {
       RNCallKeepModule.openPhoneAccounts();
-    }
+    // }
   };
 
   _hasDefaultPhoneAccount = async (options) => {
     const hasDefault = await RNCallKeepModule.checkDefaultPhoneAccount();
-    const shouldOpenAccounts = await this._alert(options, hasDefault);
+    // const shouldOpenAccounts = await this._alert(options, hasDefault);
 
-    if (shouldOpenAccounts) {
+    // if (shouldOpenAccounts) {
       RNCallKeepModule.openPhoneAccountSettings();
-    }
+    // }
   };
 
   _alert = async (options, condition) => new Promise((resolve, reject) => {
