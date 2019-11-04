@@ -174,7 +174,7 @@ class RNCallKeep {
     // const shouldOpenAccounts = await this._alert(options, showAccountAlert);
 
     // if (shouldOpenAccounts) {
-      RNCallKeepModule.openPhoneAccounts();
+      // RNCallKeepModule.openPhoneAccounts();
     // }
   };
 
@@ -183,7 +183,7 @@ class RNCallKeep {
     // const shouldOpenAccounts = await this._alert(options, hasDefault);
 
     // if (shouldOpenAccounts) {
-      RNCallKeepModule.openPhoneAccountSettings();
+      // RNCallKeepModule.openPhoneAccountSettings();
     // }
   };
 
