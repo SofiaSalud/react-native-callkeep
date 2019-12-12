@@ -133,6 +133,8 @@ export default class RNCallKeep {
 
   }
 
+  static async getActiveCallId(): Promise<string> {}
+
   /**
      * @description setMutedCall method is available only on iOS.
   */
