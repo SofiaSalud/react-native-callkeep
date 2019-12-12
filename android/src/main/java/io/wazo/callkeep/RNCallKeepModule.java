@@ -102,11 +102,17 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     private boolean isReceiverRegistered = false;
     private VoiceBroadcastReceiver voiceBroadcastReceiver;
     private ReadableMap _settings;
+    private static RNCallKeepModule module_instance;
+
+    public static RNCallKeepModule getInstance() {
+        return module_instance;
+    }
 
     public RNCallKeepModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         this.reactContext = reactContext;
+        RNCallKeepModule.module_instance = this;
     }
 
     @Override
@@ -323,6 +329,16 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getActiveCallId(Promise promise) {
+        String id = VoiceConnectionService.getActiveCallId();
+        if (id == null) {
+            promise.resolve(null);
+            return;
+        }
+        promise.resolve(id);
+    }
+
+    @ReactMethod
     public void sendDTMF(String uuid, String key) {
         Connection conn = VoiceConnectionService.getConnection(uuid);
         if (conn == null) {
@@ -449,7 +465,7 @@ public class RNCallKeepModule extends ReactContextBaseJavaModule {
         //     _settings.hasKey("selfManaged") &&
         //     _settings.getBoolean("selfManaged")
         // ) {
-            builder.setCapabilities(PhoneAccount.CAPABILITY_SELF_MANAGED);
+            builder.setCapabilities(PhoneAccount.CAPABILITY_SELF_MANAGED | PhoneAccount.CAPABILITY_SUPPORTS_VIDEO_CALLING | PhoneAccount.CAPABILITY_VIDEO_CALLING);
         // } else {
         //     builder.setCapabilities(PhoneAccount.CAPABILITY_CALL_PROVIDER);
         // }

@@ -102,7 +102,7 @@ public class VoiceConnection extends Connection {
         super.onAnswer();
         Log.d(TAG, "onAnswer called");
 
-        setConnectionCapabilities(getConnectionCapabilities() | Connection.CAPABILITY_HOLD);
+        setConnectionCapabilities(getConnectionCapabilities() | Connection.CAPABILITY_HOLD | Connection.CAPABILITY_CANNOT_DOWNGRADE_VIDEO_TO_AUDIO | CAPABILITY_SUPPORTS_VT_LOCAL_BIDIRECTIONAL | CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL);
         setAudioModeIsVoip(true);
 
         sendCallRequestToActivity(ACTION_ANSWER_CALL, handle);

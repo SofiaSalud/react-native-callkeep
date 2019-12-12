@@ -90,6 +90,15 @@ public class VoiceConnectionService extends ConnectionService {
         return null;
     }
 
+    public static String getActiveCallId() {
+        List<String> ids = new ArrayList(currentConnections.keySet());
+        if (ids.length > 0) {
+            return ids[0];
+        } else {
+            return null;
+        }
+    }
+
     public VoiceConnectionService() {
         super();
         Log.e(TAG, "Constructor");
