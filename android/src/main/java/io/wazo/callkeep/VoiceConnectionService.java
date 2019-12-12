@@ -92,8 +92,8 @@ public class VoiceConnectionService extends ConnectionService {
 
     public static String getActiveCallId() {
         List<String> ids = new ArrayList(currentConnections.keySet());
-        if (ids.length > 0) {
-            return ids[0];
+        if (ids.size() > 0) {
+            return ids.get(0);
         } else {
             return null;
         }
