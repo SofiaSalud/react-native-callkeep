@@ -51,7 +51,7 @@ const options = {
   }
 };
 
-RNCallKeep.setup(options);
+RNCallKeep.setup(options).then(accepted => {});
 ```
 
 - `options`: Object
@@ -62,6 +62,8 @@ RNCallKeep.setup(options);
       If provided, it will be displayed on system UI during the call
     - `ringtoneSound`: string (optional)
       If provided, it will be played when incoming calls received; the system will use the default ringtone if this is not provided
+    - `includesCallsInRecents`: boolean (optional)
+      If provided, calls will be shown in the recent calls when true and not when false (ios 11 and above)
     - `maximumCallGroups`: string (optional)
       If provided, the maximum number of call groups supported by this application (Default: 3)
     - `maximumCallsPerCallGroup`: string (optional)
@@ -84,6 +86,27 @@ RNCallKeep.setup(options);
     - `additionalPermissions`: [PermissionsAndroid] (optional)
       Any additional permissions you'd like your app to have at first launch. Can be used to simplify permission flows and avoid
       multiple popups to the user at different times.
+
+## Constants
+
+To make passing the right integer into methods easier, there are constants that are exported from the module.
+
+```
+const CONSTANTS = {
+  END_CALL_REASONS: {
+    FAILED: 1,
+    REMOTE_ENDED: 2,
+    UNANSWERED: 3,
+    ANSWERED_ELSEWHERE: 4,
+    DECLINED_ELSEWHERE: 5,
+    MISSED: 6
+  }
+};
+
+const { CONSTANTS as CK_CONSTANTS, RNCallKeep } from 'react-native-callkeep';
+
+console.log(CK_CONSTANTS.END_CALL_REASONS.FAILED) // outputs 1
+```
 
 ## Methods
 
@@ -195,7 +218,8 @@ RNCallKeep.updateDisplay(uuid, displayName, handle)
 
 ### endCall
 
-When you finish an incoming/outgoing call.
+When finish an incoming/outgoing call.  
+(When user actively chooses to end the call from your app's UI.)
 
 ```js
 RNCallKeep.endCall(uuid);
@@ -206,7 +230,7 @@ RNCallKeep.endCall(uuid);
 
 ### endAllCalls
 
-End all ongoing connections.
+End all ongoing calls.
 
 ```js
 RNCallKeep.endAllCalls();
@@ -225,7 +249,9 @@ RNCallKeep.rejectCall(uuid);
 
 ### reportEndCallWithUUID
 
-Report that the call ended without the user initiating
+Report that the call ended without the user initiating.  
+(Not ended by user, is usually due to the following reasons)
+
 
 ```js
 RNCallKeep.reportEndCallWithUUID(uuid, reason);
@@ -238,14 +264,14 @@ RNCallKeep.reportEndCallWithUUID(uuid, reason);
     - Call failed: 1
     - Remote user ended call: 2
     - Remote user did not answer: 3
-  - `CXCallEndedReason` constants used for iOS. `DisconnectCause` used for Android.
-  - Example enum for reasons
+    - Call Answered elsewhere: 4
+    - Call declined elsewhere: 5 (on Android this will map to Remote user ended call if you use the constants)
+    - Missed: 6 (on iOS this will map to remote user ended call)
+  - Access reasons as constants
   ```js
-  END_CALL_REASON = {
-    failed: 1,
-    remoteEnded: 2,
-    unanswered: 3
-  }
+  const { CONSTANTS as CK_CONSTANTS, RNCallKeep } from 'react-native-callkeep';
+
+  RNCallKeep.reportEndCallWithUUID(uuid, CK_CONSTANTS.END_CALL_REASONS.FAILED);
   ```
 
 ### setMutedCall
@@ -271,14 +297,6 @@ RNCallKeep.setOnHold(uuid, true)
 - `uuid`: string
   - uuid of the current call.
 - `hold`: boolean
-
-### endAllCalls
-
-End all calls that have been started on the device.
-
-```js
-RNCallKeep.endAllCalls();
-```
 
 ### checkIfBusy
 
@@ -420,7 +438,7 @@ RNCallKeep.addEventListener('didActivateAudioSession', () => {
 Callback for `RNCallKeep.displayIncomingCall`
 
 ```js
-RNCallKeep.addEventListener('didDisplayIncomingCall', ({ error, uuid, handle, localizedCallerName, fromPushKit }) => {
+RNCallKeep.addEventListener('didDisplayIncomingCall', ({ error, callUUID, handle, localizedCallerName, hasVideo, fromPushKit, payload }) => {
   // you might want to do following things when receiving this event:
   // - Start playing ringback if it is an outgoing call
 });
@@ -428,6 +446,20 @@ RNCallKeep.addEventListener('didDisplayIncomingCall', ({ error, uuid, handle, lo
 
 - `error` (string)
   - iOS only.
+- `callUUID` (string)
+  - The UUID of the call.
+- `handle` (string)
+  - Phone number of the caller
+- `localizedCallerName` (string)
+  - Name of the caller to be displayed on the native UI
+- `hasVideo` (string)
+  - `1` (video enabled)
+  - `0` (video not enabled)
+- `fromPushKit` (string)
+  - `1` (call triggered from PushKit)
+  - `0` (call not triggered from PushKit)
+- `payload` (object)
+  - VOIP push payload.
 
 ### - didPerformSetMutedCallAction
 
@@ -471,7 +503,7 @@ RNCallKeep.addEventListener('didPerformDTMFAction', ({ digits, callUUID }) => {
   - The digits that emit the dtmf tone
 - `callUUID` (string)
   - The UUID of the call.
-  
+
 ### - checkReachability
 
 On Android when the application is in background, after a certain delay the OS will close every connection with informing about it.
@@ -611,7 +643,7 @@ class RNCallKeepExample extends React.Component {
 ## Receiving a call when the application is not reachable.
 
 In some case your application can be unreachable :
-- when the user kill the application 
+- when the user kill the application
 - when it's in background since a long time (eg: after ~5mn the os will kill all connections).
 
 To be able to wake up your application to display the incoming call, you can use [https://github.com/ianlin/react-native-voip-push-notification](react-native-voip-push-notification) on iOS or BackgroundMessaging from [react-native-firebase](https://rnfirebase.io/docs/v5.x.x/messaging/receiving-messages#4)-(Optional)(Android-only)-Listen-for-FCM-messages-in-the-background).
@@ -626,13 +658,14 @@ Since iOS 13, you'll have to report the incoming calls that wakes up your applic
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
   // Process the received push
   [RNVoipPushNotificationManager didReceiveIncomingPushWithPayload:payload forType:(NSString *)type];
-  
+
   // Retrieve information like handle and callerName here
   // NSString *uuid = /* fetch for payload or ... */ [[[NSUUID UUID] UUIDString] lowercaseString];
   // NSString *callerName = @"caller name here";
   // NSString *handle = @"caller number here";
-  
-  [RNCallKeep reportNewIncomingCall:uuid handle:handle handleType:@"generic" hasVideo:false localizedCallerName:callerName fromPushKit: YES];
+  // NSDictionary *extra = [payload.dictionaryPayload valueForKeyPath:@"custom.path.to.data"]; /* use this to pass any special data (ie. from your notification) down to RN. Can also be `nil` */
+
+  [RNCallKeep reportNewIncomingCall:uuid handle:handle handleType:@"generic" hasVideo:false localizedCallerName:callerName fromPushKit: YES payload:extra];
 
   completion();
 }
@@ -645,6 +678,9 @@ Since iOS 13, you'll have to report the incoming calls that wakes up your applic
 ```
 adb logcat *:S RNCallKeepModule:V
 ```
+
+## Troubleshooting
+- Ensure that you construct a valid `uuid` by importing the `uuid` library and running `uuid.v4()` as shown in the examples. If you don't do this and use a custom string, the incoming call screen will never be shown on iOS.
 
 ## Contributing
 
