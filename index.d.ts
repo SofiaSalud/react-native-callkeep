@@ -54,7 +54,7 @@ declare module 'react-native-callkeep' {
       localizedCallerName?: string,
       handleType?: HandleType,
       hasVideo?: boolean
-    );
+    ): void;
 
     static startCall(
       uuid: string,
@@ -62,13 +62,17 @@ declare module 'react-native-callkeep' {
       contactIdentifier?: string,
       handleType?: HandleType,
       hasVideo?: boolean
-    );
-    static updateDisplay(uuid: string, displayName: string, handle: string);
+    ): void;
+    static updateDisplay(
+      uuid: string,
+      displayName: string,
+      handle: string
+    ): void;
 
     /**
      * @description reportConnectedOutgoingCallWithUUID method is available only on iOS.
      */
-    static reportConnectedOutgoingCallWithUUID(uuid: string);
+    static reportConnectedOutgoingCallWithUUID(uuid: string): void;
 
     /**
      * @description reportConnectedOutgoingCallWithUUID method is available only on iOS.
@@ -76,13 +80,13 @@ declare module 'react-native-callkeep' {
     static reportConnectingOutgoingCallWithUUID(uuid: string): void;
     static reportEndCallWithUUID(uuid: string, reason: number): void;
 
-    static rejectCall(uuid: string);
+    static rejectCall(uuid: string): void;
 
-    static endCall(uuid: string);
+    static endCall(uuid: string): void;
 
-    static endAllCalls();
+    static endAllCalls(): void;
 
-    static setReachable();
+    static setReachable(): void;
 
     /**
      * @description supportConnectionService method is available only on Android.
@@ -101,14 +105,14 @@ declare module 'react-native-callkeep' {
     /**
      * @description setMutedCall method is available only on iOS.
      */
-    static setMutedCall(uuid: string, muted: boolean);
+    static setMutedCall(uuid: string, muted: boolean): void;
 
-    static setOnHold(uuid: string, held: boolean);
+    static setOnHold(uuid: string, held: boolean): void;
 
     /**
      * @descriptions sendDTMF is used to send DTMF tones to the PBX.
      */
-    static sendDTMF(uuid: string, key: string);
+    static sendDTMF(uuid: string, key: string): void;
 
     static checkIfBusy(): Promise<boolean>;
 
@@ -117,10 +121,10 @@ declare module 'react-native-callkeep' {
     /**
      * @description setAvailable method is available only on Android.
      */
-    static setAvailable(active: boolean);
+    static setAvailable(active: boolean): void;
 
-    static setCurrentCallActive();
+    static setCurrentCallActive(): void;
 
-    static backToForeground();
+    static backToForeground(): void;
   }
 }
