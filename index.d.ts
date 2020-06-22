@@ -40,9 +40,12 @@ declare module 'react-native-callkeep' {
   export type DidPerformSetMutedCallActionPayload = boolean;
 
   export default class RNCallKeep {
-    static addEventListener(type: Events, handler: (args: any) => void);
+    static addEventListener(type: Events, handler: (args: any) => void): void;
 
-    static removeEventListener(type: Events, handler: (args: any) => void);
+    static removeEventListener(
+      type: Events,
+      handler: (args: any) => void
+    ): void;
 
     static setup(options: IOptions): Promise<void>;
 
